@@ -1,11 +1,28 @@
 public class Msg {
-    String msg;
+    String x_coordinate;
+    String y_coordinate;
 
-    public String getMsg() {
-        return msg;
+    public Msg(String x_coordinate, String y_coordinate) {
+        this.x_coordinate = x_coordinate;
+        this.y_coordinate = y_coordinate;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public String getX_coordinate() {
+        return x_coordinate;
+    }
+
+    public void setMsg(String x_coordinate, String y_coordinate) {
+
+        this.x_coordinate = x_coordinate;
+        this.y_coordinate = y_coordinate;
+    }
+
+    public String getY_coordinate() {
+        return y_coordinate;
+    }
+
+    @Override
+    public String toString(){
+        return x_coordinate + " " + y_coordinate;
     }
 }

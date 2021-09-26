@@ -32,12 +32,12 @@ public class WCS extends Thread implements IObserver {
         //this.count = count;
         m.subscribe(this);
         this.start();
-        send("Привет!");
+        //send("Привет!");
 
     }
-    public void send(String s) {
+    public void send(Msg s) {
         try {
-            dos.writeUTF(s);
+            dos.writeUTF(gson.toJson(s));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,7 +54,8 @@ public class WCS extends Thread implements IObserver {
             while (true) {
                 String obj = dis.readUTF();
                 Msg msg = gson.fromJson(obj, Msg.class);
-                m.add(msg.getMsg());
+                m.add(msg);
+                System.out.println("Json2 : " + gson.toJson(msg));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,7 +66,7 @@ public class WCS extends Thread implements IObserver {
     public void update(model m) {
         //что делать при получении новых данных
         //когда переписываем на координаты меняем просто стринг на msg
-        /// Msg notification = new Msg();
+        ////Msg notification = new Msg();
         /// notification.setMsg("Some client has changed the coordinates");
         //здесь можно разослать оповещение об обновлении координаты
         send(m.last());
