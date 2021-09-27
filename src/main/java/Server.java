@@ -71,7 +71,7 @@ public class Server extends JFrame {
 
                 count++;
                 System.out.println("Client connected");
-                WCS wcs = new WCS(clientSocket,m);
+                WCS wcs = new WCS(clientSocket,m,x_tfield,y_tfield);
             }
             //serverSocket.close();
         } catch (IOException e) {

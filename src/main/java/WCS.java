@@ -1,6 +1,7 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 
@@ -13,6 +14,8 @@ public class WCS extends Thread implements IObserver {
 
     Socket cs;
     model m;
+    JFormattedTextField x_tf;
+    JFormattedTextField y_tf;
     InputStream is;
     OutputStream os;
     DataInputStream dis;
@@ -20,9 +23,11 @@ public class WCS extends Thread implements IObserver {
     //int count = 0;
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public WCS(Socket cs, model m) {
+    public WCS(Socket cs, model m, JFormattedTextField x_tf, JFormattedTextField y_tf) {
         this.cs = cs;
         this.m = m;
+        this.x_tf = x_tf;
+        this.y_tf = y_tf;
         try {
             os = cs.getOutputStream();
             dos = new DataOutputStream(os);
@@ -55,6 +60,8 @@ public class WCS extends Thread implements IObserver {
                 String obj = dis.readUTF();
                 Msg msg = gson.fromJson(obj, Msg.class);
                 m.add(msg);
+                x_tf.setText(msg.x_coordinate);
+                y_tf.setText(msg.y_coordinate);
                 System.out.println("Json2 : " + gson.toJson(msg));
             }
         } catch (IOException e) {
