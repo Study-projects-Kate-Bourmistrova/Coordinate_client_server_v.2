@@ -1,3 +1,6 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
@@ -20,6 +23,7 @@ public class Client extends JFrame{
     OutputStream os;
     DataInputStream dis;
     DataOutputStream dos;
+    Gson gson= new GsonBuilder().setPrettyPrinting().create();
     Thread t;
 
     public Client(){
@@ -39,8 +43,9 @@ public class Client extends JFrame{
                 try {
                     clientSocket = new Socket(host, port);
                     System.out.println("Client started");
-                    is = clientSocket.getInputStream();
+                    //is = clientSocket.getInputStream();
                     os = clientSocket.getOutputStream();
+                    dos = new DataOutputStream(os);
 
                     t = new Thread(){
                         @Override
@@ -52,8 +57,14 @@ public class Client extends JFrame{
                                 is = clientSocket.getInputStream();
                                 dis = new DataInputStream(is);
                                 while(true){
+
                                     String s = dis.readUTF(); // but ill have an object
-                                    replaceCoords(s,s);//but ill replace with object fields
+
+                                    Msg msg = gson.fromJson(s, Msg.class); //ill use these when ill have an obj
+
+                                    System.out.println(msg);
+                                    replaceCoords(msg.x_coordinate,msg.y_coordinate);//but ill replace with object fields
+                                    //replaceCoords(s,s);
                                 }
                             } catch (IOException ioException) {
                                 ioException.printStackTrace();
@@ -61,6 +72,7 @@ public class Client extends JFrame{
                             finally{
                                 try {
                                     is.close();
+
                                 } catch (IOException ioException) {
                                     ioException.printStackTrace();
                                 }
@@ -101,7 +113,17 @@ public class Client extends JFrame{
         set_values = new JButton(new AbstractAction("Set values") {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                if(t != null){
+                    try {
+                        Msg msg = new Msg(x_tfield.getText(),y_tfield.getText());
+                        String s = gson.toJson(msg);
+                        System.out.println(s);
+                        dos.writeUTF(s);
+                        JOptionPane.showMessageDialog(null,"Coordinate data on server has changed");
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                }
             }
         });
         set_values.setBounds(105,210,100,40);
@@ -127,7 +149,7 @@ public class Client extends JFrame{
         x_tfield.setText(x);
         y_tfield.setText(y);
 
-        JOptionPane.showMessageDialog(null,"Coordinate data on server has changed"); // if doesn't work try parent - this
+        //JOptionPane.showMessageDialog(null,"Coordinate data on server has changed"); // if doesn't work try parent - this
     }
     public static void main(String[] args) {
         new Client();
